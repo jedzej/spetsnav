@@ -1,10 +1,6 @@
 import { createContext } from "react";
-import { ISpetsNavOptions } from "./types";
+import { SpetsNavRootState } from "./types";
 
-export const SpetsNavContext = createContext<{
-  items: { element: HTMLElement; options: ISpetsNavOptions }[];
-  focus: (item: HTMLElement) => void;
-}>({
-  items: [],
-  focus: () => {},
+export const SpetsNavContext = createContext<{ current: SpetsNavRootState }>({
+  current: { items: [], focus: () => Promise.resolve(), focused: null },
 });

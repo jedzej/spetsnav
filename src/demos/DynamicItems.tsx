@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useSpetsNav } from "../spetsnav/useSpetsNav";
+import "./styles.css";
 
 const DynamicItem = ({ children, x, y }: any) => {
   const ref = useRef<HTMLDivElement>(null);
@@ -31,8 +32,8 @@ const generatePositions = (items: string[]) =>
     ])
   );
 
+const items = ["A", "B", "C", "D", "E", "F", "G"];
 export const DynamicItems = () => {
-  const items = ["A", "B", "C", "D", "E", "F", "G"];
   const [pos, setPos] = useState<{ [key: string]: { x: number; y: number } }>(
     () => generatePositions(items)
   );
@@ -40,7 +41,7 @@ export const DynamicItems = () => {
   useEffect(() => {
     const interval = setInterval(() => setPos(generatePositions(items)), 3000);
     return () => clearInterval(interval);
-  }, [items]);
+  }, []);
   console.log(pos);
 
   return (

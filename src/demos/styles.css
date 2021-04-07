@@ -1,0 +1,19 @@
+.box {
+  height: 75px;
+  margin: 10px;
+  background-color: lightgrey;
+  box-sizing: content-box;
+  border: transparent solid 1px;
+}
+.slider-item {
+  height: 75px;
+  margin: 10px;
+  display: inline-block;
+  background-color: lightgrey;
+  box-sizing: content-box;
+  border: transparent solid 1px;
+}
+
+.focused {
+  border: red solid 1px;
+}

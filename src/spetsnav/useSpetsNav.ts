@@ -12,10 +12,10 @@ export function useSpetsNav<T extends HTMLElement>(
   ref: RefObject<T>,
   options: ISpetsNavOptions = {}
 ) {
-  const { items, focus } = useContext(SpetsNavContext);
+  const {
+    current: { items, focus },
+  } = useContext(SpetsNavContext);
   const optionsRef = useRef<ISpetsNavOptions>(options);
-
-  const { current } = ref;
 
   useEffect(() => {
     if (ref.current) {
@@ -27,20 +27,11 @@ export function useSpetsNav<T extends HTMLElement>(
         );
       };
     }
-  }, [current, items, options]);
+  }, [ref, items, options]);
 
   useLayoutEffect(() => {
     if (optionsRef.current.defaultFocused && ref.current) {
       focus(ref.current);
     }
-  }, []);
-
-  useEffect(() => {
-    optionsRef.current.onMount?.();
-
-    return () => {
-      optionsRef.current.onUnmount?.();
-    };
-    // eslint-disable-next-line
-  }, []);
+  }, [focus, ref]);
 }

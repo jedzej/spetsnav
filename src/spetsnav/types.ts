@@ -1,14 +1,22 @@
+type ResolverFunc = (
+  key: NAV_KEY,
+  items: SpetsNavNode[],
+  focusedNode: SpetsNavNode | null
+) => Promise<HTMLElement | null> | HTMLElement | null;
 export interface ISpetsNavOptions {
   noLeft?: boolean;
   noRight?: boolean;
   noUp?: boolean;
   noDown?: boolean;
   disabled?: boolean;
-  onNavFocus?: () => void;
-  onNavBlur?: () => void;
-  onMount?: () => void;
-  onUnmount?: () => void;
-  onAction?: () => void;
+  onUp?: () => Promise<void> | void;
+  onDown?: () => Promise<void> | void;
+  onLeft?: () => Promise<void> | void;
+  onRight?: () => Promise<void> | void;
+  onNavFocus?: (element: HTMLElement) => Promise<void> | void;
+  onNavBlur?: (element: HTMLElement) => Promise<void> | void;
+  onAction?: () => Promise<void> | void;
+  resolver?: ResolverFunc;
   defaultFocused?: boolean;
 }
 
@@ -23,4 +31,10 @@ export enum NAV_KEY {
   LEFT = "ArrowLeft",
   RIGHT = "ArrowRight",
   ENTER = "Enter",
+}
+
+export interface SpetsNavRootState {
+  items: { element: HTMLElement; options: ISpetsNavOptions }[];
+  focus: (element: HTMLElement | null) => Promise<void>;
+  focused: HTMLElement | null;
 }

@@ -11,15 +11,3 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
 }
-
-.box {
-  height: 75px;
-  margin: 10px;
-  background-color: lightgrey;
-  box-sizing: content-box;
-  border: transparent solid 1px;
-}
-
-.focused {
-  border: red solid 1px;
-}
