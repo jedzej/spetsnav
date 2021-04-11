@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useRef } from "react";
 import { SpetsNav } from "../spetsnav/SpetsNav";
 import { useSpetsNavFocus } from "../spetsnav/useSpetsNavFocus";
 import "./styles.css";
@@ -7,39 +7,33 @@ export const ImperativeFocusDemo = () => {
   const focus = useSpetsNavFocus();
 
   const refA = useRef<HTMLElement>(null);
-  const refB = useRef<HTMLElement>(null);
 
   return (
-    <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)" }}>
-      <SpetsNav className="box" ref={refA}>
-        AAA
-        <button
-          onClick={() => {
-            focus(() => refA.current);
-          }}
-        >
-          focus AAA
-        </button>
+    <div>
+      <SpetsNav className="imperative-box" ref={refA}>
+        imperative focus with ref
       </SpetsNav>
-      <SpetsNav className="box" data="imperative-marker-b" ref={refB}>
-        BBB
-        <button
-          onClick={() => {
-            focus(
-              (nodes) => {
-               const node= nodes.find(
-                  (node) => node.options.data === "imperative-marker-b"
-                )
-                console.log(nodes, node)
-                return node?.element ?? null
-              }
-                
-            );
-          }}
-        >
-          focus AAA
-        </button>
+      <SpetsNav className="imperative-box" data="imperative-marker-b">
+        imperative focus with predicate
       </SpetsNav>
+      <button
+        onClick={() => {
+          focus(() => refA.current);
+        }}
+      >
+        focus with ref
+      </button>
+      <button
+        onClick={() => {
+          focus(
+            (nodes) =>
+              nodes.find((node) => node.options.data === "imperative-marker-b")
+                ?.element ?? null
+          );
+        }}
+      >
+        focus with predicate
+      </button>
     </div>
   );
 };

@@ -23,7 +23,6 @@ export function useSpetsNav<T extends HTMLElement>(
 
   useLayoutEffect(() => {
     if (optionsRef.current.defaultFocused && ref.current) {
-      console.log("FOCUS", ref.current);
       spetsNav.focus(ref.current);
     }
   }, [spetsNav, ref]);

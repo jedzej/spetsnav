@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { SpetsNav } from "../spetsnav/SpetsNav";
 import "./styles.css";
 
@@ -9,7 +8,7 @@ export const CircleDemo = () => {
     (i) => (i / ITEMS_COUNT) * Math.PI * 2
   );
   return (
-    <div style={{ position: "relative", height: "200px" }}>
+    <div style={{ position: "relative", height: "220px" }}>
       {angles.map((angle, i) => (
         <SpetsNav
           className="circle-item"

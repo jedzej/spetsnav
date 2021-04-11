@@ -1,10 +1,16 @@
-.box {
+.box,
+.imperative-box {
   height: 75px;
   margin: 10px;
   background-color: lightgrey;
   box-sizing: content-box;
   border: transparent solid 1px;
 }
+
+.imperative-box {
+  display: inline-block;
+}
+
 .slider-item,
 .circle-item {
   height: 75px;
