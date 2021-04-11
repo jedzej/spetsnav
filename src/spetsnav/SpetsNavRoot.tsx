@@ -3,6 +3,7 @@ import { estimateDistance } from "./helpers";
 import { NAV_KEY, SpetsNavNode, SpetsNavRootState } from "./types";
 import { SpetsNavContext } from "./SpetsNavContext";
 import { defaultResolver } from "./resolvers";
+import { noConcurrent } from "./utils/noConcurrent";
 
 type StateRef = MutableRefObject<SpetsNavRootState>;
 
@@ -13,63 +14,163 @@ const getFocusedNode = (ref: StateRef) => getNode(ref, ref.current.focused);
 
 const getItems = (ref: StateRef) => ref.current.items;
 
-const focus = (ref: StateRef, item: HTMLElement | null) =>
-  ref.current.focus(item);
-
-const isMoveForbidden = (ref: StateRef, key: NAV_KEY) => {
-  const options = getFocusedNode(ref)?.options;
+const isMoveForbidden = (node: SpetsNavNode | null, key: NAV_KEY) => {
   switch (key) {
     case NAV_KEY.UP:
-      return !!options?.noUp;
+      return !!node?.options?.disabledUp;
     case NAV_KEY.DOWN:
-      return !!options?.noDown;
+      return !!node?.options?.disabledDown;
     case NAV_KEY.LEFT:
-      return !!options?.noLeft;
+      return !!node?.options?.disabledLeft;
     case NAV_KEY.RIGHT:
-      return !!options?.noRight;
+      return !!node?.options?.disabledRight;
     default:
       break;
   }
 };
 
-const doBefore = async (ref: StateRef, key: NAV_KEY) => {
-  const options = getFocusedNode(ref)?.options;
+const doBefore = async (node: SpetsNavNode, key: NAV_KEY) => {
+  const {
+    beforeUp,
+    beforeDown,
+    beforeLeft,
+    beforeRight,
+    beforeAny,
+  } = node.options;
   switch (key) {
     case NAV_KEY.UP:
-      return options?.onUp?.();
+      return (beforeUp ?? beforeAny)?.();
     case NAV_KEY.DOWN:
-      return options?.onDown?.();
+      return (beforeDown ?? beforeAny)?.();
     case NAV_KEY.LEFT:
-      return options?.onLeft?.();
+      return (beforeLeft ?? beforeAny)?.();
     case NAV_KEY.RIGHT:
-      return options?.onRight?.();
+      return (beforeRight ?? beforeAny)?.();
     default:
       break;
   }
+};
+const doAfter = async (node: SpetsNavNode, key: NAV_KEY) => {
+  const { afterUp, afterDown, afterLeft, afterRight, afterAny } = node.options;
+  switch (key) {
+    case NAV_KEY.UP:
+      return (afterUp ?? afterAny)?.();
+    case NAV_KEY.DOWN:
+      return (afterDown ?? afterAny)?.();
+    case NAV_KEY.LEFT:
+      return (afterLeft ?? afterAny)?.();
+    case NAV_KEY.RIGHT:
+      return (afterRight ?? afterAny)?.();
+    default:
+      break;
+  }
+};
+
+const focusAsk = async (
+  stateRef: StateRef,
+  item: HTMLElement | null,
+  key?: NAV_KEY
+): Promise<SpetsNavNode | null> => {
+  const oldFocusedNode = getFocusedNode(stateRef);
+  const newFocusedNode = getNode(stateRef, item);
+  if (!newFocusedNode) {
+    return null;
+  }
+  const result = newFocusedNode.options?.onFocusAsk
+    ? await newFocusedNode.options?.onFocusAsk?.({
+        key,
+        current: newFocusedNode,
+        previous: oldFocusedNode,
+        nodes: stateRef.current.items,
+      })
+    : true;
+  if (result === true || result === newFocusedNode) {
+    return newFocusedNode;
+  } else if (result) {
+    return focusAsk(stateRef, result.element, key);
+  }
+  return null;
+};
+
+const focusCommit = async (stateRef: StateRef, item: HTMLElement | null) => {
+  const oldFocusedNode = getFocusedNode(stateRef);
+  const newFocusedNode = getNode(stateRef, item);
+  if (oldFocusedNode) {
+    await oldFocusedNode.options?.onNavBlur?.(oldFocusedNode);
+  }
+  if (newFocusedNode) {
+    await newFocusedNode.options?.onNavFocus?.(newFocusedNode);
+  }
+  if (oldFocusedNode) {
+    oldFocusedNode.element.classList.remove("focused");
+    console.log("blur", oldFocusedNode);
+  }
+  if (item) {
+    item.classList.add("focused");
+    console.log("focused", newFocusedNode);
+  }
+  stateRef.current.focused = item;
 };
 
 export const SpetsNavRoot = ({ children }: any) => {
-  const stateRef = useRef<SpetsNavRootState>({
+  const stateRef: StateRef = useRef<SpetsNavRootState>({
     items: [],
     focused: null,
     focus: async (item: HTMLElement | null) => {
-      const oldFocusedNode = getFocusedNode(stateRef);
-      const newFocusedNode = getNode(stateRef, item);
-      await oldFocusedNode?.options?.onNavBlur?.(oldFocusedNode?.element);
-      await newFocusedNode?.options?.onNavFocus?.(newFocusedNode.element);
-      if (oldFocusedNode) {
-        oldFocusedNode.element.classList.remove("focused");
-        console.log("blur", oldFocusedNode);
+      const node = await focusAsk(stateRef, item);
+      if (node) {
+        await focusCommit(stateRef, node.element);
       }
-      if (item) {
-        item.classList.add("focused");
-        console.log("focused", newFocusedNode);
-      }
-      stateRef.current.focused = item;
     },
   });
 
   useEffect(() => {
+    const handleNavigation = noConcurrent(async (key: NAV_KEY) => {
+      console.log("Handle navigation", key);
+      if (!getFocusedNode(stateRef)) {
+        const result = await focusAsk(
+          stateRef,
+          getItems(stateRef)[0]?.element,
+          key
+        );
+        if (result) {
+          await focusCommit(stateRef, result.element);
+        }
+        return;
+      }
+
+      if (isMoveForbidden(getFocusedNode(stateRef), key)) {
+        console.log("Move forbidden", key);
+        return;
+      }
+
+      const focused = getFocusedNode(stateRef);
+
+      if (focused) {
+        await doBefore(focused, key);
+      }
+
+      const resolve =
+        getFocusedNode(stateRef)?.options?.resolver ?? defaultResolver;
+
+      const [...nextFocusCandidates] = await resolve(
+        key,
+        getItems(stateRef),
+        getFocusedNode(stateRef)
+      );
+
+      let candidate = nextFocusCandidates.shift();
+      while (candidate) {
+        const nextFocus = await focusAsk(stateRef, candidate.element, key);
+        if (nextFocus) {
+          await focusCommit(stateRef, nextFocus.element);
+          await doAfter(nextFocus, key);
+          return;
+        }
+        candidate = nextFocusCandidates.shift();
+      }
+    });
+
     const listener = async (event: KeyboardEvent) => {
       const now = performance.now();
       const key = event.code as NAV_KEY;
@@ -79,30 +180,11 @@ export const SpetsNavRoot = ({ children }: any) => {
       event.stopPropagation();
       event.preventDefault();
 
-      if (!getFocusedNode(stateRef)) {
-        await focus(stateRef, getItems(stateRef)[0]?.element);
-        return;
-      }
+      await handleNavigation(key);
 
-      if (isMoveForbidden(stateRef, key)) {
-        console.log("Move forbidden", key);
-        return;
-      }
-
-      await doBefore(stateRef, key);
-
-      const resolve =
-        getFocusedNode(stateRef)?.options?.resolver ?? defaultResolver;
-      const nextFocusedElement = await resolve(
-        key,
-        getItems(stateRef),
-        getFocusedNode(stateRef)
-      );
-      if (nextFocusedElement) {
-        await focus(stateRef, nextFocusedElement);
-      }
       console.log("duration", performance.now() - now);
     };
+
     window.addEventListener("keydown", listener);
     return () => {
       window.removeEventListener("keydown", listener);

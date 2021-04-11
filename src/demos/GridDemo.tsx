@@ -12,17 +12,17 @@ export const GridDemo = () => {
       <SpetsNav className="box" defaultFocused>
         default
       </SpetsNav>
-      <SpetsNav className="box" noLeft>
-        noLeft
+      <SpetsNav className="box" disabledLeft>
+        disabledLeft
       </SpetsNav>
-      <SpetsNav className="box" noRight>
-        noRight
+      <SpetsNav className="box" disabledRight>
+        disabledRight
       </SpetsNav>
-      <SpetsNav className="box" noDown>
-        noDown
+      <SpetsNav className="box" disabledDown>
+        disabledDown
       </SpetsNav>
-      <SpetsNav className="box" noUp>
-        noUp
+      <SpetsNav className="box" disabledUp>
+        disabledUp
       </SpetsNav>
       <SpetsNav
         className="box"

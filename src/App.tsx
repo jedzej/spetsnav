@@ -1,9 +1,10 @@
 import "./styles.css";
 import { SpetsNavRoot } from "./spetsnav/SpetsNavRoot";
-import { SpetsNav } from "./spetsnav/SpetsNav";
 import { GridDemo } from "./demos/GridDemo";
 import { SliderDemo } from "./demos/SliderDemo";
 import { DynamicSliderDemo } from "./demos/DynamicSliderDemo";
+import { CircleDemo } from "./demos/CircleDemo";
+import { ImperativeFocusDemo } from "./demos/ImperativeFocusDemo";
 
 export default function App() {
   return (
@@ -12,31 +13,8 @@ export default function App() {
         <GridDemo />
         <SliderDemo />
         <DynamicSliderDemo />
-        <div style={{ position: "relative", height: "200px" }}>
-          <SpetsNav
-            data="XD"
-            style={{
-              display: "block",
-              position: "absolute",
-              left: 20,
-              top: 20,
-            }}
-          >
-            abs1
-          </SpetsNav>
-          <SpetsNav
-            data="XD"
-            noRight
-            style={{
-              display: "block",
-              position: "absolute",
-              left: 120,
-              top: 40,
-            }}
-          >
-            abs2
-          </SpetsNav>
-        </div>
+        <CircleDemo />
+        <ImperativeFocusDemo />
         {/* <DynamicItems /> */}
       </SpetsNavRoot>
     </div>

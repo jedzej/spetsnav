@@ -1,5 +1,7 @@
 import { useMemo, useState } from "react";
+import { defaultResolver } from "../spetsnav/resolvers";
 import { SpetsNav } from "../spetsnav/SpetsNav";
+import { NAV_KEY } from "../spetsnav/types";
 import "./styles.css";
 
 const items = ["A", "B", "C", "D"];
@@ -22,15 +24,32 @@ export const SliderDemo = () => {
         <SpetsNav
           className="slider-item"
           key={item}
-          disabled={i === 0}
-          onLeft={async () => {
-            setPosition((p) => (p - 1 + items.length) % items.length);
-            await wait(0);
+          data={{
+            group: "slider-item",
+            pos: i,
           }}
-          onRight={async () => {
+          resolver={defaultResolver}
+          onFocusAsk={({ current, previous, nodes }) => {
+            if (previous?.options.data?.group !== "slider-item") {
+              return (
+                nodes
+                  .filter(
+                    ({ options }) => options.data?.group === "slider-item"
+                  )
+                  .sort((a, b) => a.options.data.pos - b.options.data.pos)[1] ??
+                null
+              );
+            }
+            return true;
+          }}
+          beforeLeft={async () => {
+            setPosition((p) => (p - 1 + items.length) % items.length);
+            // await wait(0);
+          }}
+          afterRight={async () => {
             // await wait(1000);
             setPosition((p) => (p + 1) % items.length);
-            await wait(0);
+            // await wait(0);
           }}
         >
           {item}

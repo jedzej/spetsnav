@@ -5,9 +5,9 @@ export const defaultResolver = async (
   key: NAV_KEY,
   items: SpetsNavNode[],
   focusedNode: SpetsNavNode | null
-) => {
+): Promise<SpetsNavNode[]> => {
   if (!focusedNode) {
-    return;
+    return [];
   }
 
   switch (key) {
@@ -17,7 +17,7 @@ export const defaultResolver = async (
     case NAV_KEY.RIGHT:
       const focusedRect = focusedNode.element.getBoundingClientRect();
 
-      const [nextFocused] = items
+      const nextCandidates = items
         .filter((node) => node !== focusedNode && !node.options.disabled)
         .map((node) => {
           const distance = estimateDistance(
@@ -30,11 +30,11 @@ export const defaultResolver = async (
         })
         .filter(({ distance }) => distance < Infinity)
         .sort((a, b) => a.distance - b.distance);
-      return nextFocused?.element ?? null;
+      return nextCandidates;
 
     case NAV_KEY.ENTER:
       await focusedNode?.options?.onAction?.();
       break;
   }
-  return null;
+  return [];
 };

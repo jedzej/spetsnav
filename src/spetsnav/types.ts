@@ -2,22 +2,37 @@ type ResolverFunc = (
   key: NAV_KEY,
   items: SpetsNavNode[],
   focusedNode: SpetsNavNode | null
-) => Promise<HTMLElement | null> | HTMLElement | null;
-export interface ISpetsNavOptions {
-  noLeft?: boolean;
-  noRight?: boolean;
-  noUp?: boolean;
-  noDown?: boolean;
+) => Promise<SpetsNavNode[]>;
+
+type BeforeAfterCallback = () => Promise<void> | void;
+export interface ISpetsNavOptions<T = any> {
+  disabledLeft?: boolean;
+  disabledRight?: boolean;
+  disabledUp?: boolean;
+  disabledDown?: boolean;
   disabled?: boolean;
-  onUp?: () => Promise<void> | void;
-  onDown?: () => Promise<void> | void;
-  onLeft?: () => Promise<void> | void;
-  onRight?: () => Promise<void> | void;
-  onNavFocus?: (element: HTMLElement) => Promise<void> | void;
-  onNavBlur?: (element: HTMLElement) => Promise<void> | void;
+  beforeUp?: BeforeAfterCallback;
+  beforeDown?: BeforeAfterCallback;
+  beforeLeft?: BeforeAfterCallback;
+  beforeRight?: BeforeAfterCallback;
+  beforeAny?: BeforeAfterCallback;
+  afterUp?: BeforeAfterCallback;
+  afterDown?: BeforeAfterCallback;
+  afterLeft?: BeforeAfterCallback;
+  afterRight?: BeforeAfterCallback;
+  afterAny?: BeforeAfterCallback;
+  onFocusAsk?: (params: {
+    key?: NAV_KEY;
+    current: SpetsNavNode;
+    previous: SpetsNavNode | null;
+    nodes: SpetsNavNode[];
+  }) => Promise<SpetsNavNode | null | true> | SpetsNavNode | null | true;
+  onNavFocus?: (node: SpetsNavNode) => Promise<void> | void;
+  onNavBlur?: (node: SpetsNavNode) => Promise<void> | void;
   onAction?: () => Promise<void> | void;
   resolver?: ResolverFunc;
   defaultFocused?: boolean;
+  data?: T;
 }
 
 export interface SpetsNavNode {
@@ -34,7 +49,7 @@ export enum NAV_KEY {
 }
 
 export interface SpetsNavRootState {
-  items: { element: HTMLElement; options: ISpetsNavOptions }[];
+  items: SpetsNavNode[];
   focus: (element: HTMLElement | null) => Promise<void>;
   focused: HTMLElement | null;
 }

@@ -21,7 +21,7 @@ export const verticalDistance = (a: DOMRect, b: DOMRect) =>
   Math.min(b.top - a.bottom, b.bottom - a.top);
 
 const DISTANCE_TOLERANCE_PX = -2;
-const SECONDARY_AXIS_DISTANCE_WEIGHT = 100;
+const SECONDARY_AXIS_DISTANCE_WEIGHT = 3;
 
 export const estimateDistance = (
   sourceRect: DOMRect,

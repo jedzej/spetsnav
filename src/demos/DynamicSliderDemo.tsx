@@ -1,12 +1,17 @@
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { SpetsNav } from "../spetsnav/SpetsNav";
+import { SpetsNavNode } from "../spetsnav/types";
 import "./styles.css";
 
 const wait = (timeout: number) =>
   new Promise<void>((resolve) => setTimeout(() => resolve(), timeout));
 
 export const DynamicSliderDemo = () => {
-  const [items, setItems] = useState([1]);
+  const [items, setItems] = useState([0, 1, 2, 3]);
+
+  const onNavFocus = useCallback(async ({ element }: SpetsNavNode) => {
+    element.scrollIntoView();
+  }, []);
 
   return (
     <div
@@ -20,19 +25,14 @@ export const DynamicSliderDemo = () => {
     >
       {items.map((item, i) => (
         <SpetsNav
-          data={{ group: `slider-item`, key: item }}
-          className="slider-item"
           key={item}
-          onNavFocus={async (element) => {
-            element.scrollIntoView({
-              behavior: "smooth",
-            });
-          }}
-          onRight={async () => {
+          className="slider-item"
+          onNavFocus={onNavFocus}
+          afterRight={async () => {
             if (i >= items.length - 2) {
+              await wait(200);
               setItems((items) => [...items, items.length]);
             }
-            await wait(200);
           }}
         >
           {item}
