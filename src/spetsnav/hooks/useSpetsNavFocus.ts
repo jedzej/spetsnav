@@ -1,6 +1,6 @@
 import { useCallback, useContext } from "react";
-import { SpetsNavNode } from "./types";
-import { SpetsNavContext } from "./SpetsNavContext";
+import { SpetsNavNode } from "../types";
+import { SpetsNavContext } from "../SpetsNavContext";
 
 export function useSpetsNavFocus() {
   const spetsNavRef = useContext(SpetsNavContext);

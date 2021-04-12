@@ -1,5 +1,6 @@
 import { estimateDistance } from "./helpers";
-import { NAV_KEY, SpetsNavNode } from "./types";
+import { SpetsNavNode } from "./types";
+import { NAV_KEY } from "./constants";
 
 export const defaultResolver = async (
   key: NAV_KEY,
@@ -24,7 +25,7 @@ export const defaultResolver = async (
             node.element.getBoundingClientRect(),
             key,
             !!node.options.graspHorizontal,
-            !!node.options.graspVertical,
+            !!node.options.graspVertical
           );
           // console.log(element, distance);
           return { ...node, distance };

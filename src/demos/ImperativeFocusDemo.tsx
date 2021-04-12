@@ -1,6 +1,5 @@
 import { useRef } from "react";
-import { SpetsNav } from "../spetsnav/SpetsNav";
-import { useSpetsNavFocus } from "../spetsnav/useSpetsNavFocus";
+import { SpetsNav, useSpetsNavFocus } from "../spetsnav";
 import "./styles.css";
 
 export const ImperativeFocusDemo = () => {

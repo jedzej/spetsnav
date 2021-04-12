@@ -1,6 +1,5 @@
 import { useCallback, useState } from "react";
-import { SpetsNav } from "../spetsnav/SpetsNav";
-import { SpetsNavNode } from "../spetsnav/types";
+import { SpetsNav, SpetsNavNode } from "../spetsnav";
 import "./styles.css";
 
 const wait = (timeout: number) =>

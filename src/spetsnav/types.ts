@@ -1,4 +1,5 @@
 import { ReactNode } from "react";
+import { NAV_KEY } from "./constants";
 
 type ResolverFunc = (
   key: NAV_KEY,
@@ -39,14 +40,6 @@ export interface SpetsNavNode {
   options: ISpetsNavOptions;
 }
 
-export enum NAV_KEY {
-  UP = "ArrowUp",
-  DOWN = "ArrowDown",
-  LEFT = "ArrowLeft",
-  RIGHT = "ArrowRight",
-  ENTER = "Enter",
-}
-
 export interface SpetsNavRootState {
   nodes: SpetsNavNode[];
   focus: (element: HTMLElement | null) => Promise<void>;
@@ -58,4 +51,9 @@ export interface SpetsNavRootState {
 export interface SpetsNavRootProps {
   focusedClass?: string;
   children?: ReactNode;
+  keyBinding?: SpetsNavBinding;
 }
+
+export type SpetsNavBinding = (
+  handleKey: (key: NAV_KEY) => Promise<void>
+) => () => void;

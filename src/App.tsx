@@ -1,5 +1,4 @@
-import "./styles.css";
-import { SpetsNavRoot } from "./spetsnav/SpetsNavRoot";
+import { SpetsNavRoot } from "./spetsnav";
 import { GridDemo } from "./demos/GridDemo";
 import { SliderDemo } from "./demos/SliderDemo";
 import { DynamicSliderDemo } from "./demos/DynamicSliderDemo";
@@ -9,7 +8,7 @@ import { MountingDemo } from "./demos/MountingDemo";
 
 export default function App() {
   return (
-    <div className="App">
+    <div>
       <SpetsNavRoot>
         <GridDemo />
         <SliderDemo />

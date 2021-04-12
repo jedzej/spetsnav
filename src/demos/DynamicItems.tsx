@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { useSpetsNav } from "../spetsnav/useSpetsNav";
+import { useSpetsNav } from "../spetsnav";
 import "./styles.css";
 
 const DynamicItem = ({ children, x, y }: any) => {

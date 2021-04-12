@@ -1,13 +1,10 @@
-import { MutableRefObject, useEffect, useRef } from "react";
-import {
-  NAV_KEY,
-  SpetsNavNode,
-  SpetsNavRootProps,
-  SpetsNavRootState,
-} from "./types";
+import { MutableRefObject, useCallback, useEffect, useRef } from "react";
+import { SpetsNavNode, SpetsNavRootProps, SpetsNavRootState } from "./types";
+import { NAV_KEY } from "./constants";
 import { SpetsNavContext } from "./SpetsNavContext";
 import { defaultResolver } from "./resolvers";
 import { noConcurrent } from "./utils/noConcurrent";
+import { defaultBinding } from "./bindings";
 
 type StateRef = MutableRefObject<SpetsNavRootState>;
 
@@ -103,6 +100,7 @@ const focusCommit = async (stateRef: StateRef, element: HTMLElement | null) => {
 export const SpetsNavRoot = ({
   children,
   focusedClass = "focused",
+  keyBinding = defaultBinding,
 }: SpetsNavRootProps) => {
   const stateRef: StateRef = useRef<SpetsNavRootState>({
     nodes: [],
@@ -117,6 +115,10 @@ export const SpetsNavRoot = ({
       const nodes = getNodes(stateRef);
       nodes.push(node);
       return () => {
+        if (getFocusedNode(stateRef) === node) {
+          // stateRef.current.focused = null;
+          console.log("AAAAA")
+        }
         nodes.splice(
           nodes.findIndex((n) => n === node),
           1
@@ -126,8 +128,9 @@ export const SpetsNavRoot = ({
     focusedClass,
   });
 
-  useEffect(() => {
-    const handleNavigation = noConcurrent(async (key: NAV_KEY) => {
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const handleKey = useCallback(
+    noConcurrent(async (key: NAV_KEY) => {
       console.log("Handle navigation", key);
       if (!getFocusedNode(stateRef)) {
         const result = await focusAsk(
@@ -166,27 +169,14 @@ export const SpetsNavRoot = ({
         }
         candidate = nextFocusCandidates.shift();
       }
-    });
+    }),
+    []
+  );
 
-    const listener = async (event: KeyboardEvent) => {
-      const now = performance.now();
-      const key = event.code as NAV_KEY;
-      if (!Object.values(NAV_KEY).includes(key)) {
-        return;
-      }
-      event.stopPropagation();
-      event.preventDefault();
-
-      await handleNavigation(key);
-
-      console.log("duration", performance.now() - now);
-    };
-
-    window.addEventListener("keydown", listener);
-    return () => {
-      window.removeEventListener("keydown", listener);
-    };
-  }, [stateRef]);
+  useEffect(() => {
+    keyBinding(handleKey);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <SpetsNavContext.Provider value={stateRef}>

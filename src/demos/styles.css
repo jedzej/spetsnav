@@ -1,7 +1,7 @@
 .box,
 .imperative-box {
-  height: 75px;
-  margin: 10px;
+  height: 50px;
+  margin: 8px;
   background-color: lightgrey;
   box-sizing: content-box;
   border: transparent solid 1px;
@@ -13,8 +13,8 @@
 
 .slider-item,
 .circle-item {
-  height: 75px;
-  margin: 10px;
+  height: 50px;
+  margin: 8px;
   display: inline-block;
   background-color: lightgrey;
   box-sizing: content-box;

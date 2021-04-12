@@ -7,7 +7,7 @@ import {
   forwardRef,
 } from "react";
 import { ISpetsNavOptions } from "./types";
-import { useSpetsNav } from "./useSpetsNav";
+import { useSpetsNav } from "./hooks/useSpetsNav";
 
 interface INavItemProps<T = any> extends ISpetsNavOptions {
   children: ReactNode;
@@ -19,10 +19,7 @@ interface INavItemProps<T = any> extends ISpetsNavOptions {
 
 export const SpetsNav = memo(
   forwardRef<any, INavItemProps>(
-    (
-      { children, className, component, style, ...options },
-      externalRef
-    ) => {
+    ({ children, className, component, style, ...options }, externalRef) => {
       const internalRef = useRef<HTMLElement>(null);
       const ref = (externalRef ?? internalRef) as any;
       const Component: any = component;

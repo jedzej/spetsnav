@@ -1,6 +1,6 @@
 import { RefObject, useContext, useLayoutEffect, useRef } from "react";
-import { ISpetsNavOptions } from "./types";
-import { SpetsNavContext } from "./SpetsNavContext";
+import { ISpetsNavOptions } from "../types";
+import { SpetsNavContext } from "../SpetsNavContext";
 
 export function useSpetsNav<T extends HTMLElement>(
   ref: RefObject<T>,
@@ -18,6 +18,9 @@ export function useSpetsNav<T extends HTMLElement>(
   useLayoutEffect(() => {
     if (optionsRef.current.defaultFocused && ref.current) {
       spetsNav.focus(ref.current);
+      return () => {
+        spetsNav.focus(null);
+      };
     }
   }, [spetsNav, ref]);
 }
