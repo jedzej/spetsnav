@@ -7,5 +7,6 @@ export const SpetsNavContext = createContext<{ current: SpetsNavRootState }>({
     focus: () => Promise.resolve(),
     focused: null,
     register: () => () => {},
+    focusedClass: "focused",
   },
 });

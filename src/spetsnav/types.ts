@@ -1,3 +1,5 @@
+import { ReactNode } from "react";
+
 type ResolverFunc = (
   key: NAV_KEY,
   items: SpetsNavNode[],
@@ -49,5 +51,11 @@ export interface SpetsNavRootState {
   nodes: SpetsNavNode[];
   focus: (element: HTMLElement | null) => Promise<void>;
   focused: HTMLElement | null;
-  register: (node: SpetsNavNode) => () => void,
+  register: (node: SpetsNavNode) => () => void;
+  focusedClass: string;
+}
+
+export interface SpetsNavRootProps {
+  focusedClass?: string;
+  children?: ReactNode;
 }

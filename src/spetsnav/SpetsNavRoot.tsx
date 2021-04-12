@@ -1,5 +1,10 @@
 import { MutableRefObject, useEffect, useRef } from "react";
-import { NAV_KEY, SpetsNavNode, SpetsNavRootState } from "./types";
+import {
+  NAV_KEY,
+  SpetsNavNode,
+  SpetsNavRootProps,
+  SpetsNavRootState,
+} from "./types";
 import { SpetsNavContext } from "./SpetsNavContext";
 import { defaultResolver } from "./resolvers";
 import { noConcurrent } from "./utils/noConcurrent";
@@ -87,17 +92,18 @@ const focusCommit = async (stateRef: StateRef, element: HTMLElement | null) => {
     await newFocusedNode.options?.onNavFocus?.(newFocusedNode);
   }
   if (oldFocusedNode) {
-    oldFocusedNode.element.classList.remove("focused");
-    console.log("blur", oldFocusedNode);
+    oldFocusedNode.element.classList.remove(stateRef.current.focusedClass);
   }
   if (element) {
-    element.classList.add("focused");
-    console.log("focused", newFocusedNode);
+    element.classList.add(stateRef.current.focusedClass);
   }
   stateRef.current.focused = element;
 };
 
-export const SpetsNavRoot: React.FC = ({ children }) => {
+export const SpetsNavRoot = ({
+  children,
+  focusedClass = "focused",
+}: SpetsNavRootProps) => {
   const stateRef: StateRef = useRef<SpetsNavRootState>({
     nodes: [],
     focused: null,
@@ -117,6 +123,7 @@ export const SpetsNavRoot: React.FC = ({ children }) => {
         );
       };
     },
+    focusedClass,
   });
 
   useEffect(() => {
