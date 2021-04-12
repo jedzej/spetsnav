@@ -18,12 +18,13 @@ export const defaultResolver = async (
       const focusedRect = focusedNode.element.getBoundingClientRect();
 
       const nextCandidates = nodes
-        .filter((node) => node !== focusedNode && !node.options.disabled)
         .map((node) => {
           const distance = estimateDistance(
             focusedRect,
             node.element.getBoundingClientRect(),
-            key
+            key,
+            !!node.options.graspHorizontal,
+            !!node.options.graspVertical,
           );
           // console.log(element, distance);
           return { ...node, distance };

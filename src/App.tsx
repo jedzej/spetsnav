@@ -5,6 +5,7 @@ import { SliderDemo } from "./demos/SliderDemo";
 import { DynamicSliderDemo } from "./demos/DynamicSliderDemo";
 import { CircleDemo } from "./demos/CircleDemo";
 import { ImperativeFocusDemo } from "./demos/ImperativeFocusDemo";
+import { MountingDemo } from "./demos/MountingDemo";
 
 export default function App() {
   return (
@@ -15,6 +16,7 @@ export default function App() {
         <DynamicSliderDemo />
         <CircleDemo />
         <ImperativeFocusDemo />
+        <MountingDemo />
         {/* <DynamicItems /> */}
       </SpetsNavRoot>
     </div>

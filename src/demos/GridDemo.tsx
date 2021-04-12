@@ -1,5 +1,7 @@
 import { useState } from "react";
+import { defaultResolver } from "../spetsnav/resolvers";
 import { SpetsNav } from "../spetsnav/SpetsNav";
+import { NAV_KEY } from "../spetsnav/types";
 import "./styles.css";
 
 export const GridDemo = () => {
@@ -12,16 +14,36 @@ export const GridDemo = () => {
       <SpetsNav className="box" defaultFocused>
         default
       </SpetsNav>
-      <SpetsNav className="box" disabledLeft>
+      <SpetsNav
+        className="box"
+        resolver={(key, items, focusedNode) =>
+          key === NAV_KEY.LEFT ? [] : defaultResolver(key, items, focusedNode)
+        }
+      >
         disabledLeft
       </SpetsNav>
-      <SpetsNav className="box" disabledRight>
+      <SpetsNav
+        className="box"
+        resolver={(key, items, focusedNode) =>
+          key === NAV_KEY.RIGHT ? [] : defaultResolver(key, items, focusedNode)
+        }
+      >
         disabledRight
       </SpetsNav>
-      <SpetsNav className="box" disabledDown>
+      <SpetsNav
+        className="box"
+        resolver={(key, items, focusedNode) =>
+          key === NAV_KEY.DOWN ? [] : defaultResolver(key, items, focusedNode)
+        }
+      >
         disabledDown
       </SpetsNav>
-      <SpetsNav className="box" disabledUp>
+      <SpetsNav
+        className="box"
+        resolver={(key, items, focusedNode) =>
+          key === NAV_KEY.UP ? [] : defaultResolver(key, items, focusedNode)
+        }
+      >
         disabledUp
       </SpetsNav>
       <SpetsNav
@@ -33,7 +55,7 @@ export const GridDemo = () => {
         <br />
         onNavBlur: {blurCounter}
       </SpetsNav>
-      <SpetsNav className="box" disabled>
+      <SpetsNav className="box" onFocusAsk={() => false}>
         disabled
       </SpetsNav>
       <SpetsNav

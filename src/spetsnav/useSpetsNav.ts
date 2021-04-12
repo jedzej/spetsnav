@@ -11,13 +11,7 @@ export function useSpetsNav<T extends HTMLElement>(
 
   useLayoutEffect(() => {
     if (ref.current) {
-      spetsNav.nodes.push({ element: ref.current, options });
-      return () => {
-        spetsNav.nodes.splice(
-          spetsNav.nodes.findIndex(({ element }) => element === ref.current),
-          1
-        );
-      };
+      return spetsNav.register({ element: ref.current, options });
     }
   }, [ref, spetsNav, options]);
 

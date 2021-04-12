@@ -13,21 +13,6 @@ const getFocusedNode = (ref: StateRef) => getNode(ref, ref.current.focused);
 
 const getNodes = (ref: StateRef) => ref.current.nodes;
 
-const isMoveForbidden = (node: SpetsNavNode | null, key: NAV_KEY) => {
-  switch (key) {
-    case NAV_KEY.UP:
-      return !!node?.options?.disabledUp;
-    case NAV_KEY.DOWN:
-      return !!node?.options?.disabledDown;
-    case NAV_KEY.LEFT:
-      return !!node?.options?.disabledLeft;
-    case NAV_KEY.RIGHT:
-      return !!node?.options?.disabledRight;
-    default:
-      break;
-  }
-};
-
 const doBefore = async (node: SpetsNavNode, key: NAV_KEY) => {
   const {
     beforeUp,
@@ -122,6 +107,16 @@ export const SpetsNavRoot: React.FC = ({ children }) => {
         await focusCommit(stateRef, node.element);
       }
     },
+    register: (node) => {
+      const nodes = getNodes(stateRef);
+      nodes.push(node);
+      return () => {
+        nodes.splice(
+          nodes.findIndex((n) => n === node),
+          1
+        );
+      };
+    },
   });
 
   useEffect(() => {
@@ -136,11 +131,6 @@ export const SpetsNavRoot: React.FC = ({ children }) => {
         if (result) {
           await focusCommit(stateRef, result.element);
         }
-        return;
-      }
-
-      if (isMoveForbidden(getFocusedNode(stateRef), key)) {
-        console.log("Move forbidden", key);
         return;
       }
 

@@ -25,6 +25,7 @@ export const SliderDemo = () => {
             pos: i,
           }}
           resolver={defaultResolver}
+          graspVertical
           onFocusAsk={({ previous, nodes }) => {
             if (previous?.options.data?.group !== "slider-item") {
               return (

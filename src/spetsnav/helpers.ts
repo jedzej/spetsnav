@@ -26,7 +26,9 @@ const SECONDARY_AXIS_DISTANCE_WEIGHT = 3;
 export const estimateDistance = (
   sourceRect: DOMRect,
   destRect: DOMRect,
-  key: NAV_KEY
+  key: NAV_KEY,
+  graspHorizontal: boolean,
+  graspVertical: boolean
 ): number => {
   const separation = {
     right: destRect.left - sourceRect.right,
@@ -37,19 +39,21 @@ export const estimateDistance = (
     vertical: 0,
   };
 
-  separation.horizontal =
-    separation.right > 0
-      ? separation.right
-      : separation.left > 0
-      ? separation.left
-      : 0;
+  separation.horizontal = graspVertical
+    ? 0
+    : separation.right > 0
+    ? separation.right
+    : separation.left > 0
+    ? separation.left
+    : 0;
 
-  separation.vertical =
-    separation.top > 0
-      ? separation.top
-      : separation.bottom > 0
-      ? separation.bottom
-      : 0;
+  separation.vertical = graspHorizontal
+    ? 0
+    : separation.top > 0
+    ? separation.top
+    : separation.bottom > 0
+    ? separation.bottom
+    : 0;
 
   let result = Infinity;
   switch (key) {
