@@ -11,10 +11,10 @@ export function useSpetsNav<T extends HTMLElement>(
 
   useLayoutEffect(() => {
     if (ref.current) {
-      spetsNav.items.push({ element: ref.current, options });
+      spetsNav.nodes.push({ element: ref.current, options });
       return () => {
-        spetsNav.items.splice(
-          spetsNav.items.findIndex(({ element }) => element === ref.current),
+        spetsNav.nodes.splice(
+          spetsNav.nodes.findIndex(({ element }) => element === ref.current),
           1
         );
       };

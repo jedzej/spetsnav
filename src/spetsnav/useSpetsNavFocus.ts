@@ -13,7 +13,7 @@ export function useSpetsNavFocus() {
       ) => HTMLElement | null
     ) => {
       const candidate = predicate(
-        spetsNavRef.current.items,
+        spetsNavRef.current.nodes,
         spetsNavRef.current.focused
       );
       if (candidate) {

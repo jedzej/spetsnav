@@ -1,5 +1,4 @@
 import { MutableRefObject, useEffect, useRef } from "react";
-import { estimateDistance } from "./helpers";
 import { NAV_KEY, SpetsNavNode, SpetsNavRootState } from "./types";
 import { SpetsNavContext } from "./SpetsNavContext";
 import { defaultResolver } from "./resolvers";
@@ -8,11 +7,11 @@ import { noConcurrent } from "./utils/noConcurrent";
 type StateRef = MutableRefObject<SpetsNavRootState>;
 
 const getNode = (ref: StateRef, el?: HTMLElement | null) =>
-  ref.current.items.find(({ element }) => element === el) || null;
+  ref.current.nodes.find(({ element }) => element === el) || null;
 
 const getFocusedNode = (ref: StateRef) => getNode(ref, ref.current.focused);
 
-const getItems = (ref: StateRef) => ref.current.items;
+const getNodes = (ref: StateRef) => ref.current.nodes;
 
 const isMoveForbidden = (node: SpetsNavNode | null, key: NAV_KEY) => {
   switch (key) {
@@ -50,6 +49,7 @@ const doBefore = async (node: SpetsNavNode, key: NAV_KEY) => {
       break;
   }
 };
+
 const doAfter = async (node: SpetsNavNode, key: NAV_KEY) => {
   const { afterUp, afterDown, afterLeft, afterRight, afterAny } = node.options;
   switch (key) {
@@ -68,11 +68,11 @@ const doAfter = async (node: SpetsNavNode, key: NAV_KEY) => {
 
 const focusAsk = async (
   stateRef: StateRef,
-  item: HTMLElement | null,
+  element: HTMLElement | null,
   key?: NAV_KEY
 ): Promise<SpetsNavNode | null> => {
   const oldFocusedNode = getFocusedNode(stateRef);
-  const newFocusedNode = getNode(stateRef, item);
+  const newFocusedNode = getNode(stateRef, element);
   if (!newFocusedNode) {
     return null;
   }
@@ -81,7 +81,7 @@ const focusAsk = async (
         key,
         current: newFocusedNode,
         previous: oldFocusedNode,
-        nodes: stateRef.current.items,
+        nodes: getNodes(stateRef),
       })
     : true;
   if (result === true || result === newFocusedNode) {
@@ -92,9 +92,9 @@ const focusAsk = async (
   return null;
 };
 
-const focusCommit = async (stateRef: StateRef, item: HTMLElement | null) => {
+const focusCommit = async (stateRef: StateRef, element: HTMLElement | null) => {
   const oldFocusedNode = getFocusedNode(stateRef);
-  const newFocusedNode = getNode(stateRef, item);
+  const newFocusedNode = getNode(stateRef, element);
   if (oldFocusedNode) {
     await oldFocusedNode.options?.onNavBlur?.(oldFocusedNode);
   }
@@ -105,16 +105,16 @@ const focusCommit = async (stateRef: StateRef, item: HTMLElement | null) => {
     oldFocusedNode.element.classList.remove("focused");
     console.log("blur", oldFocusedNode);
   }
-  if (item) {
-    item.classList.add("focused");
+  if (element) {
+    element.classList.add("focused");
     console.log("focused", newFocusedNode);
   }
-  stateRef.current.focused = item;
+  stateRef.current.focused = element;
 };
 
-export const SpetsNavRoot = ({ children }: any) => {
+export const SpetsNavRoot: React.FC = ({ children }) => {
   const stateRef: StateRef = useRef<SpetsNavRootState>({
-    items: [],
+    nodes: [],
     focused: null,
     focus: async (item: HTMLElement | null) => {
       const node = await focusAsk(stateRef, item);
@@ -130,7 +130,7 @@ export const SpetsNavRoot = ({ children }: any) => {
       if (!getFocusedNode(stateRef)) {
         const result = await focusAsk(
           stateRef,
-          getItems(stateRef)[0]?.element,
+          getNodes(stateRef)[0]?.element,
           key
         );
         if (result) {
@@ -155,7 +155,7 @@ export const SpetsNavRoot = ({ children }: any) => {
 
       const [...nextFocusCandidates] = await resolve(
         key,
-        getItems(stateRef),
+        getNodes(stateRef),
         getFocusedNode(stateRef)
       );
 

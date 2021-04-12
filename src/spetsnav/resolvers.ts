@@ -3,7 +3,7 @@ import { NAV_KEY, SpetsNavNode } from "./types";
 
 export const defaultResolver = async (
   key: NAV_KEY,
-  items: SpetsNavNode[],
+  nodes: SpetsNavNode[],
   focusedNode: SpetsNavNode | null
 ): Promise<SpetsNavNode[]> => {
   if (!focusedNode) {
@@ -17,7 +17,7 @@ export const defaultResolver = async (
     case NAV_KEY.RIGHT:
       const focusedRect = focusedNode.element.getBoundingClientRect();
 
-      const nextCandidates = items
+      const nextCandidates = nodes
         .filter((node) => node !== focusedNode && !node.options.disabled)
         .map((node) => {
           const distance = estimateDistance(

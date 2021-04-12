@@ -49,7 +49,7 @@ export enum NAV_KEY {
 }
 
 export interface SpetsNavRootState {
-  items: SpetsNavNode[];
+  nodes: SpetsNavNode[];
   focus: (element: HTMLElement | null) => Promise<void>;
   focused: HTMLElement | null;
 }

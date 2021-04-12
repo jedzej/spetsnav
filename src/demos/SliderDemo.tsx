@@ -1,13 +1,9 @@
 import { useMemo, useState } from "react";
 import { defaultResolver } from "../spetsnav/resolvers";
 import { SpetsNav } from "../spetsnav/SpetsNav";
-import { NAV_KEY } from "../spetsnav/types";
 import "./styles.css";
 
 const items = ["A", "B", "C", "D"];
-
-const wait = (timeout: number) =>
-  new Promise<void>((resolve) => setTimeout(() => resolve(), timeout));
 
 export const SliderDemo = () => {
   const [position, setPosition] = useState(0);
@@ -29,7 +25,7 @@ export const SliderDemo = () => {
             pos: i,
           }}
           resolver={defaultResolver}
-          onFocusAsk={({ current, previous, nodes }) => {
+          onFocusAsk={({ previous, nodes }) => {
             if (previous?.options.data?.group !== "slider-item") {
               return (
                 nodes
