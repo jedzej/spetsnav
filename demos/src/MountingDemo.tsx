@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { SpetsNav } from "../spetsnav";
+import { SpetsNav } from "spetsnav";
 import "./styles.css";
 
 export const MountingDemo = () => {

@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { SpetsNav, defaultResolver } from "../spetsnav";
+import { SpetsNav, defaultResolver } from "spetsnav";
 import "./styles.css";
 
 const items = ["A", "B", "C", "D"];

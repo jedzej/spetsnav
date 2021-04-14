@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { useSpetsNav } from "../spetsnav";
+import { useSpetsNav } from "spetsnav";
 import "./styles.css";
 
 const DynamicItem = ({ children, x, y }: any) => {
@@ -33,6 +33,7 @@ const generatePositions = (items: string[]) =>
   );
 
 const items = ["A", "B", "C", "D", "E", "F", "G"];
+
 export const DynamicItems = () => {
   const [pos, setPos] = useState<{ [key: string]: { x: number; y: number } }>(
     () => generatePositions(items)

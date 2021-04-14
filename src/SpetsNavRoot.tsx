@@ -1,4 +1,4 @@
-import { MutableRefObject, useCallback, useEffect, useRef } from "react";
+import React, { MutableRefObject, useCallback, useEffect, useRef } from "react";
 import { SpetsNavNode, SpetsNavRootProps, SpetsNavRootState } from "./types";
 import { NAV_KEY } from "./constants";
 import { SpetsNavContext } from "./SpetsNavContext";
@@ -117,7 +117,6 @@ export const SpetsNavRoot = ({
       return () => {
         if (getFocusedNode(stateRef) === node) {
           // stateRef.current.focused = null;
-          console.log("AAAAA")
         }
         nodes.splice(
           nodes.findIndex((n) => n === node),
@@ -131,7 +130,7 @@ export const SpetsNavRoot = ({
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const handleKey = useCallback(
     noConcurrent(async (key: NAV_KEY) => {
-      console.log("Handle navigation", key);
+      // console.log("Handle navigation", key);
       if (!getFocusedNode(stateRef)) {
         const result = await focusAsk(
           stateRef,

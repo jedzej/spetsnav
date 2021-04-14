@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { defaultResolver, SpetsNav, NAV_KEY } from "../spetsnav";
+import { defaultResolver, SpetsNav, NAV_KEY } from "spetsnav";
 import "./styles.css";
 
 export const GridDemo = () => {

@@ -1,4 +1,4 @@
-import { SpetsNav } from "../spetsnav";
+import { SpetsNav } from "spetsnav";
 import "./styles.css";
 
 const ITEMS_COUNT = 8;
