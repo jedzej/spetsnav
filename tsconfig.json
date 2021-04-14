@@ -15,8 +15,7 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "jsx": "react",
-    "outDir": "./dist",
-    "noEmit": true
+    "outDir": "./dist"
   },
   "include": ["./src/index.ts"]
 }

@@ -23,10 +23,8 @@
     "typescript": "^4.1.2"
   },
   "scripts": {
-    "demo": "react-scripts start",
-    "build": "tsc",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "prepack": "yarn build",
+    "build": "tsc"
   },
   "eslintConfig": {
     "extends": [
